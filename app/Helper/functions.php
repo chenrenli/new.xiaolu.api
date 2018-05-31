@@ -15,15 +15,18 @@ use App\Helper\Util\AES;
 function output_data($data = [], $code = 200, $msg = 'success')
 {
     $result = [];
+    $result = $data;
+    /*
     $result['code'] = $code;
     $result['msg'] = $msg;
     if ($data) {
         $result['data'] = $data;
-    }
+    }*/
     $key = config('auth.aec_key');
     $iv = config('auth.aec_iv');
     $result = AES::encrypt($key, $iv, json_encode($result));
     return $result;
+    //return json_encode($result);
 }
 
 /**

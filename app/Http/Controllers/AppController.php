@@ -7,64 +7,65 @@
  */
 namespace App\Http\Controllers;
 
+use App\Helper\Util\AES;
 use App\Models\App;
 use App\Models\AppAd;
+use App\Models\Position;
 use App\Models\Sdk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AppController extends Controller
 {
+
     /**
-     * @api {GET} /app/getAd    获取应用广告
-     * @apiName getAd
-     * @apiGroup app
+     * @api {POST} /fetchAd  获取广告
+     * @apiName fetchAd
+     * @apiGroup
      * @apiVersion 1.0.0
      *
-     * @apiParam {String} packagename   包名
-     * @apiParam {String} channel       渠道名称
      *
      * @apiSuccessExample Success-Response:
      * {
      *     "code": 200,
      *     "msg": "success",
-     *     "data": {
-     *         "packagename": "com.test",
-     *         "channel_id": 2,
-     *         "channel_title": "xiaomi",
-     *         "sdk_list": [
-     *             {
-     *                 "appid": "test444",
-     *                 "adid": 4,
-     *                 "sdk_id": 1,
-     *                 "sdk_title": "test",
-     *                 "sdk_start_path": "test",
-     *                 "sdk_start_class": "test"
-     *             },
-     *             {
-     *                 "appid": "test5555",
-     *                 "adid": 5,
-     *                 "sdk_id": 2,
-     *                 "sdk_title": "test333",
-     *                 "sdk_start_path": "test",
-     *                 "sdk_start_class": "test"
+     *     "data": [
+     *         {
+     *             "video": {
+     *                 "sdkName": "test",
+     *                 "appId": "test444",
+     *                 "positionId": "tst123456"
      *             }
-     *         ]
-     *     }
+     *         },
+     *         {
+     *             "interstitial": {
+     *                 "sdkName": "test333",
+     *                 "appId": "test5555",
+     *                 "positionId": "tst123456"
+     *             }
+     *         }
+     *     ]
      * }
      */
     public function fetchAd(Request $request)
     {
-
-        $packagename = $request->input("packagename");
-        $channel = $request->input("channel");
-        $validate = Validator::make($request->all(), [
-            "packagename" => "required",
+//        echo AES::encrypt(config('auth.aec_key'),config('auth.aec_iv'),'{“packageName”:  “com.test”,  “channel”: “xiaomi”}');
+//        exit();
+        $params =  $request->getContent();
+        //$params = AES::decrypt(config('auth.aec_key'),config('auth.aec_iv'),$params);
+        $params = json_decode(trim($params),true);
+        if(!is_array($params)){
+            return \App\Helper\output_error("参数错误");
+        }
+        $validate = Validator::make($params, [
+            "packageName" => "required",
             "channel" => "required",
         ]);
         if ($validate->fails()) {
             return \App\Helper\output_error($validate->errors()->first());
         }
+        $packagename = $params['packageName'];
+        $channel = $params['channel'];
         $map['packagename'] = $packagename;
         $map['channel_title'] = $channel;
         $appModel = new App();
@@ -88,18 +89,14 @@ class AppController extends Controller
         }
         //将广告数据对应起来
         $result = [];
-        $result['packagename'] = $packagename;
-        $result['channel_id'] = $app->channel_id;
-        $result['channel_title'] = $app->channel_title;
-        foreach ($app_ad as $ad) {
+        foreach ($app_ad as $key=>$ad) {
+            $position = Position::find($ad->position_id);
+            $p_name = $position->name;
             $data = [];
-            $data['appid'] = $ad->appid;
-            $data['adid'] = $ad->id;
-            $data['sdk_id'] = $ad->sdk_id;
-            $data['sdk_title'] = $sdks[$ad->sdk_id]->title;
-            $data['sdk_start_path'] = $sdks[$ad->sdk_id]->start_path;
-            $data['sdk_start_class'] = $sdks[$ad->sdk_id]->start_class;
-            $result['sdk_list'][] = $data;
+            $data['sdkName'] = $ad->sdk_title;
+            $data['appId'] = $ad->appid;
+            $data['positionId'] = $ad->adid;
+            $result[$key][$p_name] = $data;
         }
 
         return \App\Helper\output_data($result);
@@ -111,12 +108,16 @@ class AppController extends Controller
      */
     public function getSdkList(Request $request){
         $sdkModel = new Sdk();
-        $sdk_list = $sdkModel->select();
+        $sdk_list = $sdkModel->where([])->get();
         $result = [];
         if($sdk_list){
-            foreach($sdk_list as $sdk){
-
+            foreach($sdk_list as $key=>$sdk){
+                $result[$key]['_id'] = $sdk->id;
+                $result[$key]['name'] = $sdk->title;
+                $result[$key]['filePath'] = $sdk->start_path;
+                $result[$key]['className'] = $sdk->start_class;
             }
         }
+        return \App\Helper\output_data($result);
     }
 }
