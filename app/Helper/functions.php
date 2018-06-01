@@ -43,4 +43,20 @@ function output_error($msg = "error", $code = -1)
     return $result;
 }
 
+/**
+ * 返回信息
+ * @param bool $ok
+ * @param $data
+ */
+function onResult($ok=true,$data=[],$msg='error'){
+    $result = [];
+    $result['ok'] = $ok;
+    if($ok){
+        $result['data'] = $data;
+    }else{
+        $result['error'] = $msg;
+    }
+    return json_encode($result);
+}
+
 
