@@ -15,8 +15,8 @@ use App\Helper\Util\AES;
 function output_data($data = [], $ok = true)
 {
     $result = [];
-    $result = $data;
-    //$result['ok'] = $ok;
+    $result['data'] = $data;
+    $result['ok'] = $ok;
     /*
     $result['code'] = $code;
     $result['msg'] = $msg;

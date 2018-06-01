@@ -90,7 +90,6 @@ class AppController extends Controller
         }
         //将广告数据对应起来
         $result = [];
-        $result['ok'] = true;
         foreach ($app_ad as $key => $ad) {
             $position = Position::find($ad->position_id);
             $p_name = $position->name;
