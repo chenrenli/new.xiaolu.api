@@ -51,10 +51,10 @@ class AppController extends Controller
     {
 //        echo AES::encrypt(config('auth.aec_key'),config('auth.aec_iv'),'{“packageName”:  “com.test”,  “channel”: “xiaomi”}');
 //        exit();
-        $params =  $request->getContent();
-        //$params = AES::decrypt(config('auth.aec_key'),config('auth.aec_iv'),$params);
-        $params = json_decode(trim($params),true);
-        if(!is_array($params)){
+        $params = $request->getContent();
+        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $params);
+        $params = json_decode($params, true);
+        if (!is_array($params)) {
             return \App\Helper\output_error("参数错误");
         }
         $validate = Validator::make($params, [
@@ -89,7 +89,7 @@ class AppController extends Controller
         }
         //将广告数据对应起来
         $result = [];
-        foreach ($app_ad as $key=>$ad) {
+        foreach ($app_ad as $key => $ad) {
             $position = Position::find($ad->position_id);
             $p_name = $position->name;
             $data = [];
@@ -106,12 +106,13 @@ class AppController extends Controller
     /**
      * 获取sdk列表
      */
-    public function getSdkList(Request $request){
+    public function getSdkList(Request $request)
+    {
         $sdkModel = new Sdk();
         $sdk_list = $sdkModel->where([])->get();
         $result = [];
-        if($sdk_list){
-            foreach($sdk_list as $key=>$sdk){
+        if ($sdk_list) {
+            foreach ($sdk_list as $key => $sdk) {
                 $result[$key]['_id'] = $sdk->id;
                 $result[$key]['name'] = $sdk->title;
                 $result[$key]['filePath'] = $sdk->start_path;

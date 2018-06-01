@@ -17,7 +17,7 @@ class AES
      */
     public static function encrypt($key, $iv, $data)
     {
-        return openssl_encrypt($data, 'aes-128-cbc', $key, OPENSSL_RAW_DATA, $iv);
+        return base64_encode(openssl_encrypt($data, 'aes-128-cbc', $key, OPENSSL_RAW_DATA, $iv));
     }
 
     /**
@@ -28,6 +28,6 @@ class AES
      */
     public static function decrypt($key, $iv, $data)
     {
-        return openssl_decrypt($data, 'aes-128-cbc', $key, OPENSSL_RAW_DATA, $iv);
+        return openssl_decrypt(base64_decode($data), 'aes-128-cbc', $key, OPENSSL_RAW_DATA, $iv);
     }
 }
