@@ -34,7 +34,13 @@ function output_data($data = [], $code = 200, $msg = 'success')
  */
 function output_error($msg = "error", $code = -1)
 {
-    return output_data([], $code, $msg);
+    $result = [];
+    $result['ok'] = false;
+    $result['error'] = $msg;
+    $key = config('auth.aec_key');
+    $iv = config('auth.aec_iv');
+    $result = AES::encrypt($key, $iv, json_encode($result));
+    return $result;
 }
 
 
