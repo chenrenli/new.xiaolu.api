@@ -12,10 +12,11 @@ use App\Helper\Util\AES;
 /**
  * 返回正确的JSon数据
  */
-function output_data($data = [], $code = 200, $msg = 'success')
+function output_data($data = [], $ok = true)
 {
     $result = [];
     $result = $data;
+    $result['ok'] = $ok;
     /*
     $result['code'] = $code;
     $result['msg'] = $msg;
@@ -48,12 +49,13 @@ function output_error($msg = "error", $code = -1)
  * @param bool $ok
  * @param $data
  */
-function onResult($ok=true,$data=[],$msg='error'){
+function onResult($ok = true, $data = [], $msg = 'error')
+{
     $result = [];
     $result['ok'] = $ok;
-    if($ok){
+    if ($ok) {
         $result['data'] = $data;
-    }else{
+    } else {
         $result['error'] = $msg;
     }
     return json_encode($result);
