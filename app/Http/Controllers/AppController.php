@@ -49,10 +49,11 @@ class AppController extends Controller
      */
     public function fetchAd(Request $request)
     {
-//        echo AES::encrypt(config('auth.aec_key'),config('auth.aec_iv'),'{“packageName”:  “com.test”,  “channel”: “xiaomi”}');
-//        exit();
-        $params = $request->getContent();
-        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $params);
+//        $str = '{"packageName":"com.titan.stub","channel":"xiaomi"}';
+//        echo $str1 = AES::encrypt(config('auth.aec_key'), config('auth.aec_iv'),$str);
+
+        $content = $request->getContent();
+        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
         $params = json_decode($params, true);
         if (!is_array($params)) {
             return \App\Helper\output_error("参数错误");
@@ -96,9 +97,8 @@ class AppController extends Controller
             $data['sdkName'] = $ad->sdk_title;
             $data['appId'] = $ad->appid;
             $data['positionId'] = $ad->adid;
-            $result[$key][$p_name] = $data;
+            $result[$p_name] = $data;
         }
-
         return \App\Helper\output_data($result);
 
     }
