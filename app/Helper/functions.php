@@ -33,7 +33,7 @@ function output_data($data = [], $ok = true)
 /**
  * 返回错误的JSon数据
  */
-function output_error($msg = "error", $code = -1)
+function output_error($msg = "error")
 {
     $result = [];
     $result['ok'] = false;

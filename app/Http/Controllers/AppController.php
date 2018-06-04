@@ -65,8 +65,8 @@ class AppController extends Controller
         if ($validate->fails()) {
             return \App\Helper\output_error($validate->errors()->first());
         }
-        $packagename = $params['packageName'];
-        $channel = $params['channel'];
+        $packagename = $params['packageName'];  //游戏包名
+        $channel = $params['channel'];   //渠道名称
         $map['packagename'] = $packagename;
         $map['channel_title'] = $channel;
         $appModel = new App();
@@ -97,6 +97,7 @@ class AppController extends Controller
             $data['sdkName'] = $ad->sdk_title;
             $data['appId'] = $ad->appid;
             $data['positionId'] = $ad->adid;
+            $data['adPackageName'] = $ad->adpackagename;  //第三方广告包名
             $result[$p_name] = $data;
         }
         return \App\Helper\output_data($result);
