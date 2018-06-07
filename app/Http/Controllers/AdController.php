@@ -61,150 +61,150 @@ class AdController extends Controller
         $return_strategy_id = false;
         foreach ($strategy_list as $val) {
             $type = $val->type;
-            $rule = $val->rule;
-            $rule_content = $val->rule_content;
-            if ($strategy_id == 0) {
-                $strategy_id = $val->strategy_id;
-            } elseif ($strategy_id != $val->strategy_id) {
-                if ($return_strategy_id == true) {
-                    break;
-                }
-                $strategy_id = $val['strategy_id'];
-            } elseif ($strategy_id == $val->strategy_id && !$return_strategy_id) {
-                continue;
-            }
-            switch ($type) {
-                case 1:
-                    //包名
-                    $rule_content = explode(",", $rule_content);
-                    if ($rule == 0 && in_array($packagename, $rule_content)) {
-                        $return_strategy_id = true;
-                    } elseif ($rule == 1 && !in_array($packagename, $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        $return_strategy_id = false;
-                    }
-                    break;
-                case 2:
-                    //手机版本
-                    if (in_array($rule, [0, 1])) {
-                        $rule_content = explode(",", $rule_content);
-                    }
-                    if ($rule == 0 && in_array($version, $rule_content)) {
-                        $return_strategy_id = true;
-                    } elseif ($rule == 1 && !in_array($version, $rule_content)) {
-                        $return_strategy_id = true;
-                    } elseif ($rule == 2 && $rule_content <= $version) {
-                        $return_strategy_id = true;
-                    } elseif ($rule == 3 && $rule_content >= $version) {
-                        $return_strategy_id = true;
-                    } else {
-                        $return_strategy_id = false;
-                    }
-                    break;
-                case 3:
-                    //手机品牌
-                    $rule_content = explode(",", $rule_content);
-                    if ($rule == 0 && in_array($brand, $rule_content)) {
-                        $return_strategy_id = true;
-                    } elseif ($rule == 1 && !in_array($brand, $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        $return_strategy_id = false;
-                    }
-                    break;
-                case 4:
-                    //地区(国家)
-                    $location = IP::find($ip);
-                    if ($location == 'N/A') {
-                        $location[0] = '';
-                    }
-                    // 有上报时用上报的
-                    if (!empty($country)) {
-                        $location[0] = $country;
-                    }
-                    $rule_content = explode(',', $val['rule_content']);
-                    if ($rule == 0 && in_array($location[0], $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        if ($rule == 1 && !in_array($location[0], $rule_content)) {
-                            $return_strategy_id = true;
-                        } else {
-                            $return_strategy_id = false;
-                        }
-                    }
-                    break;
-                case 5:
-                    //省
-                    // 根据IP获取地理位置
-                    $location = IP::find($ip);
-                    if ($location == 'N/A') {
-                        $location[1] = '';
-                    }
-                    // 有上报时用上报的
-                    if (!empty($province)) {
-                        $location[1] = str_replace(array('省', '市'), '', $province);
-                    }
-                    $rule_content = explode(',', $val['rule_content']);
-                    if ($rule == 0 && in_array($location[1], $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        if ($rule == 1 && !in_array($location[1], $rule_content)) {
-                            $return_strategy_id = true;
-                        } else {
-                            $return_strategy_id = false;
-                        }
-                    }
-                    break;
-                case 6:
-                    //市
-                    $location = IP::find($ip);
-                    if ($location == 'N/A') {
-                        $location[2] = '';
-                    }
-                    // 有上报时用上报的
-                    if (!empty($city)) {
-                        $location[2] = str_replace(array('省', '市'), '', $city);
-                    }
-                    $rule_content = explode(',', $val['rule_content']);
-                    if ($rule == 0 && in_array($location[2], $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        if ($rule == 1 && !in_array($location[2], $rule_content)) {
-                            $return_strategy_id = true;
-                        } else {
-                            $return_strategy_id = false;
-                        }
-                    }
-                    break;
-                case 7:
-                    //区县
-                    // 根据IP获取地理位置
-                    $location = IP::find($ip);
-                    if ($location == 'N/A') {
-                        $location[3] = '';
-                    }
-                    $rule_content = explode(',', $rule_content);
-                    if ($rule == 0 && in_array($location[3], $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        if ($rule == 1 && !in_array($location[3], $rule_content)) {
-                            $return_strategy_id = true;
-                        } else {
-                            $return_strategy_id = false;
-                        }
-                    }
-                    break;
-                default:
-                    //渠道
-                    $rule_content = explode(",", $rule_content);
-                    if ($rule == 0 && in_array($channel, $rule_content)) {
-                        $return_strategy_id = true;
-                    } elseif ($rule == 1 && !in_array($channel, $rule_content)) {
-                        $return_strategy_id = true;
-                    } else {
-                        $return_strategy_id = false;
-                    }
+                            $rule = $val->rule;
+                            $rule_content = $val->rule_content;
+                            if ($strategy_id == 0) {
+                                $strategy_id = $val->strategy_id;
+                            } elseif ($strategy_id != $val->strategy_id) {
+                                if ($return_strategy_id == true) {
+                                    break;
+                                }
+                                $strategy_id = $val['strategy_id'];
+                            } elseif ($strategy_id == $val->strategy_id && !$return_strategy_id) {
+                                continue;
+                            }
+                            switch ($type) {
+                                case 1:
+                                    //包名
+                                    $rule_content = explode(",", $rule_content);
+                                    if ($rule == 0 && in_array($packagename, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } elseif ($rule == 1 && !in_array($packagename, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        $return_strategy_id = false;
+                                    }
+                                    break;
+                                case 2:
+                                    //手机版本
+                                    if (in_array($rule, [0, 1])) {
+                                        $rule_content = explode(",", $rule_content);
+                                    }
+                                    if ($rule == 0 && in_array($version, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } elseif ($rule == 1 && !in_array($version, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } elseif ($rule == 2 && $rule_content <= $version) {
+                                        $return_strategy_id = true;
+                                    } elseif ($rule == 3 && $rule_content >= $version) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        $return_strategy_id = false;
+                                    }
+                                    break;
+                                case 3:
+                                    //手机品牌
+                                    $rule_content = explode(",", $rule_content);
+                                    if ($rule == 0 && in_array($brand, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } elseif ($rule == 1 && !in_array($brand, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        $return_strategy_id = false;
+                                    }
+                                    break;
+                                case 4:
+                                    //地区(国家)
+                                    $location = IP::find($ip);
+                                    if ($location == 'N/A') {
+                                        $location[0] = '';
+                                    }
+                                    // 有上报时用上报的
+                                    if (!empty($country)) {
+                                        $location[0] = $country;
+                                    }
+                                    $rule_content = explode(',', $val['rule_content']);
+                                    if ($rule == 0 && in_array($location[0], $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        if ($rule == 1 && !in_array($location[0], $rule_content)) {
+                                            $return_strategy_id = true;
+                                        } else {
+                                            $return_strategy_id = false;
+                                        }
+                                    }
+                                    break;
+                                case 5:
+                                    //省
+                                    // 根据IP获取地理位置
+                                    $location = IP::find($ip);
+                                    if ($location == 'N/A') {
+                                        $location[1] = '';
+                                    }
+                                    // 有上报时用上报的
+                                    if (!empty($province)) {
+                                        $location[1] = str_replace(array('省', '市'), '', $province);
+                                    }
+                                    $rule_content = explode(',', $val['rule_content']);
+                                    if ($rule == 0 && in_array($location[1], $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        if ($rule == 1 && !in_array($location[1], $rule_content)) {
+                                            $return_strategy_id = true;
+                                        } else {
+                                            $return_strategy_id = false;
+                                        }
+                                    }
+                                    break;
+                                case 6:
+                                    //市
+                                    $location = IP::find($ip);
+                                    if ($location == 'N/A') {
+                                        $location[2] = '';
+                                    }
+                                    // 有上报时用上报的
+                                    if (!empty($city)) {
+                                        $location[2] = str_replace(array('省', '市'), '', $city);
+                                    }
+                                    $rule_content = explode(',', $val['rule_content']);
+                                    if ($rule == 0 && in_array($location[2], $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        if ($rule == 1 && !in_array($location[2], $rule_content)) {
+                                            $return_strategy_id = true;
+                                        } else {
+                                            $return_strategy_id = false;
+                                        }
+                                    }
+                                    break;
+                                case 7:
+                                    //区县
+                                    // 根据IP获取地理位置
+                                    $location = IP::find($ip);
+                                    if ($location == 'N/A') {
+                                        $location[3] = '';
+                                    }
+                                    $rule_content = explode(',', $rule_content);
+                                    if ($rule == 0 && in_array($location[3], $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        if ($rule == 1 && !in_array($location[3], $rule_content)) {
+                                            $return_strategy_id = true;
+                                        } else {
+                                            $return_strategy_id = false;
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    //渠道
+                                    $rule_content = explode(",", $rule_content);
+                                    if ($rule == 0 && in_array($channel, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } elseif ($rule == 1 && !in_array($channel, $rule_content)) {
+                                        $return_strategy_id = true;
+                                    } else {
+                                        $return_strategy_id = false;
+                                    }
 
             }
         }
