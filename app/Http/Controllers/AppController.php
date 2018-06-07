@@ -58,7 +58,8 @@ class AppController extends Controller
 //        echo $str1 = AES::encrypt(config('auth.aec_key'), config('auth.aec_iv'),$str);
 
         $content = $request->getContent();
-        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        //$params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        $params = $content;
         $params = json_decode($params, true);
         if (!is_array($params)) {
             return \App\Helper\output_error("参数错误");
@@ -122,17 +123,18 @@ class AppController extends Controller
 
         $return = $this->getStrategy($map);
         $res = json_decode($return, true);
+
         if ($res['ok'] == false) {
             //策略不命中的话显示默认的sdk广告
             return \App\Helper\output_data($result);
-        }else{
+        } else {
             //替换成策略的广告
             $strategy_ad_ids = $res['data']['ad_ids'];
             $adModel = new Ad();
-            $ad_list = $adModel->whereIn("id",$strategy_ad_ids)->get();
+            $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
             $result = [];
-            if($ad_list){
-                foreach($app_ad as $appad){
+            if ($ad_list) {
+                foreach ($app_ad as $appad) {
                     $position = Position::find($appad->position_id);
                     $p_name = $position->name;
                     $data = [];
@@ -140,8 +142,8 @@ class AppController extends Controller
                     $data['appId'] = $appad->appid;
                     $data['positionId'] = $appad->adid;
                     $data['adPackageName'] = $appad->adpackagename;  //第三方广告包名
-                    foreach($ad_list as $ad){
-                        if($appad->sdk_id==$ad->sdk_id && $appad->position_id==$ad->position_id){
+                    foreach ($ad_list as $ad) {
+                        if ($appad->sdk_id == $ad->sdk_id && $appad->position_id == $ad->position_id) {
                             //替换同一个sdk同一个广告类型的广告
                             $data['appId'] = $ad->appid;
                             $data['positionId'] = $ad->adid;
@@ -151,16 +153,12 @@ class AppController extends Controller
                     }
                     $result[$p_name] = $data;
                 }
+                print_r($result);
                 return \App\Helper\output_data($result);
 
             }
 
         }
-
-
-
-
-
 
 
     }
@@ -213,13 +211,17 @@ class AppController extends Controller
                         if (in_array($rule, [1, 2])) {
                             $rule_content = explode(",", $rule_content);
                         }
-                        if ($rule == 1 && in_array($version, $rule_content)) {
+                        if ($rule == 2 && in_array($version, $rule_content)) {
+                            //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 2 && !in_array($version, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($version, $rule_content)) {
+                            //不包含
                             $return_strategy_id = true;
                         } elseif ($rule == 3 && $rule_content <= $version) {
+                            //小于等于
                             $return_strategy_id = true;
                         } elseif ($rule == 4 && $rule_content >= $version) {
+                            //大于等于
                             $return_strategy_id = true;
                         } else {
                             $return_strategy_id = false;
@@ -228,9 +230,11 @@ class AppController extends Controller
                     case 2:
                         //包名
                         $rule_content = explode(",", $rule_content);
-                        if ($rule == 1 && in_array($packagename, $rule_content)) {
+                        if ($rule == 2 && in_array($packagename, $rule_content)) {
+                            //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 2 && !in_array($packagename, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($packagename, $rule_content)) {
+                            //不包含
                             $return_strategy_id = true;
                         } else {
                             $return_strategy_id = false;
@@ -239,9 +243,11 @@ class AppController extends Controller
                     case 3:
                         //手机品牌
                         $rule_content = explode(",", $rule_content);
-                        if ($rule == 1 && in_array($brand, $rule_content)) {
+                        if ($rule == 2 && in_array($brand, $rule_content)) {
+                            //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 2 && !in_array($brand, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($brand, $rule_content)) {
+                            //不包含
                             $return_strategy_id = true;
                         } else {
                             $return_strategy_id = false;
@@ -250,9 +256,11 @@ class AppController extends Controller
                     case 4:
                         //渠道
                         $rule_content = explode(",", $rule_content);
-                        if ($rule == 1 && in_array($channel, $rule_content)) {
+                        if ($rule == 2 && in_array($channel, $rule_content)) {
+                            //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 2 && !in_array($channel, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($channel, $rule_content)) {
+                            //不包含
                             $return_strategy_id = true;
                         } else {
                             $return_strategy_id = false;
@@ -261,9 +269,11 @@ class AppController extends Controller
                     case 5:
                         //运营商
                         $rule_content = explode(",", $rule_content);
-                        if ($rule == 1 && in_array($operator, $rule_content)) {
+                        if ($rule == 2 && in_array($operator, $rule_content)) {
+                            //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 2 && !in_array($operator, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($operator, $rule_content)) {
+                            //不包含
                             $return_strategy_id = true;
                         } else {
                             $return_strategy_id = false;
@@ -272,9 +282,11 @@ class AppController extends Controller
                     case 6:
                         //网络
                         $rule_content = explode(",", $rule_content);
-                        if ($rule == 1 && in_array($net, $rule_content)) {
+                        if ($rule == 2 && in_array($net, $rule_content)) {
+                            //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 2 && !in_array($net, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($net, $rule_content)) {
+                            //不包含
                             $return_strategy_id = true;
                         } else {
                             $return_strategy_id = false;
@@ -283,18 +295,31 @@ class AppController extends Controller
                         break;
                     case 7:
                         //日期
-                        $rule_content = explode(",",$rule_content);
-                        $begin_time = str_replace("-","",$rule_content[0]);
+                        $rule_content = explode(",", $rule_content);
+                        $begin_time = str_replace("-", "", $rule_content[0]);
                         $begin_time_hour = $rule_content[1];
-                        $end_time = str_replace("-","",$rule_content[2]);
+                        $end_time = str_replace("-", "", $rule_content[2]);
                         $end_time_hour = $rule_content[3];
                         $h = intval(date("H"));
                         $date = date("Ymd");
-                        if($date>=$begin_time&&$date<=$end_time && $h>=$begin_time_hour &&$h<=$end_time_hour){
+                        if ($date >= $begin_time && $date <= $end_time && $h >= $begin_time_hour && $h <= $end_time_hour) {
                             $return_strategy_id = true;
-                        }else{
+                        } else {
                             $return_strategy_id = false;
                         }
+                        break;
+
+                    case 8:
+                        //地区(国家)
+
+                        break;
+                    case 9:
+                        //地区(省)
+
+                        break;
+                    case 10:
+                        //地区(城市)
+
                         break;
 
 
@@ -316,7 +341,7 @@ class AppController extends Controller
         foreach ($s_ad_list as $s_ad) {
             $adids[] = $s_ad->ad_id;
         }
-        if(count($adids)==0){
+        if (count($adids) == 0) {
             return \App\Helper\onResult(false, [], "找不到相关策略的广告数据");
         }
 
