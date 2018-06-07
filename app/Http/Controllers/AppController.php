@@ -58,8 +58,7 @@ class AppController extends Controller
 //        echo $str1 = AES::encrypt(config('auth.aec_key'), config('auth.aec_iv'),$str);
 
         $content = $request->getContent();
-        //$params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
-        $params = $content;
+        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
         $params = json_decode($params, true);
         if (!is_array($params)) {
             return \App\Helper\output_error("参数错误");
