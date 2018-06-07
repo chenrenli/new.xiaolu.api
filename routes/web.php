@@ -28,3 +28,6 @@ Route::post("/getSdkList", "AppController@getSdkList");
 //更新接口
 Route::get("/update", "UpdateController@index");
 Route::post("/update", "UpdateController@index");
+
+//获取更新版本信息
+Route::post("/getUpdateInfo", "UpdateController@getUpdateInfo");

@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 use App\Helper\Util\AES;
 use App\Models\App;
 use App\Models\AppAd;
+use App\Models\Sdk;
 use App\Models\Update;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -57,13 +58,14 @@ class UpdateController extends Controller
      * 获取更新信息
      * 请求参数：{“packageName”: “包名”, “channel”: “渠道”}
      * {“codeVersion”:”主程序代码版本”, “sdkVersions”: [
-    {“name”: “GDT”, version:”1.21”},{“name”: “Oneway”, version:”2.21”}
-    ]}
+     * {“name”: “GDT”, version:”1.21”},{“name”: “Oneway”, version:”2.21”}
+     * ]}
      */
     public function getUpdateInfo(Request $request)
     {
         $content = $request->getContent();
         $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        //$params = $content;
         $params = json_decode($params, true);
         if (!is_array($params)) {
             return \App\Helper\output_error("参数错误");
@@ -76,24 +78,35 @@ class UpdateController extends Controller
             return \App\Helper\output_error($validate->errors()->first());
         }
         $map['packagename'] = $params['packageName'];
-        $map['channel'] = $params['channel'];
+        $map['channel_title'] = $params['channel'];
         $app = App::where($map)->first();
         if (!$app) {
             return \App\Helper\output_error("应用不存在");
         }
-        $app_ad = AppAd::where("app_id", "=", $app->id)->groupBy('sdk_id')->get();
+        $app_ad = AppAd::where("app_id", "=", $app->id)->get();
         $sdk_ids = [];
         if ($app_ad) {
             foreach ($app_ad as $ad) {
                 $sdk_ids[] = $ad->sdk_id;
             }
         }
-        $updates = Update::whereIn("sdk_id", $sdk_ids)->get();
-        if (!$updates) {
-            return \App\Helper\output_error("没有更新信息");
+        //获取主程序更新信息
+        $updateModel = new Update();
+        $update = $updateModel->where("type", 0)->orderBy("id", "desc")->first();
+        $return = [];
+        $return['codeVersion'] = $update->version??"";
+        $return['sdkVersions'] = [];
+        foreach ($sdk_ids as $sdk_id) {
+            $update = Update::where("sdk_id", "=", $sdk_id)->orderBy("id", "desc")->first();
+            $sdk = Sdk::where("id", "=", $sdk_id)->first();
+            if ($sdk) {
+                $version = "";
+                $version = $update->version??"";
+                $return['sdkVersions'][] = ["name" => $sdk->title, "version" => $version];
+            }
+
         }
-
-
+        return \App\Helper\output_data($return);
 
 
     }
@@ -101,20 +114,36 @@ class UpdateController extends Controller
     /**
      * 请求参数：{“packageName”: “包名”, “channel”: “渠道”, “version:”: “主程序代码版本”}
      * 更新主程序
-    返回结果：{
-    “ok”:true, “resPath:”代码文件路径”, “key”: “秘钥（包括文件及resPath路径的加密）”
-    }
+     * 返回结果：{
+     * “ok”:true, “resPath:”代码文件路径”, “key”: “秘钥（包括文件及resPath路径的加密）”
+     * }
      */
-    public function updateCode(){
-
+    public function updateCode(Request $request)
+    {
+        $content = $request->getContent();
+        //$params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        $params = $content;
+        $params = json_decode($params, true);
+        if (!is_array($params)) {
+            return \App\Helper\output_error("参数错误");
+        }
+        $validate = Validator::make($params, [
+            "packageName" => "required",
+            "channel" => "required",
+        ]);
+        if ($validate->fails()) {
+            return \App\Helper\output_error($validate->errors()->first());
+        }
     }
+
     /**
      * 更新sdk信息
      * 请求参数：{“packageName”: “包名”, “channel”: “渠道”, “sdkName”: “要更新的SDK名称”, “version:”: “SDK版本”}
      * 返回结果：{
-    “ok”:true, “resPath:”SDK文件路径”, “key”: “秘钥（包括文件及resPath路径的加密）”
+     * “ok”:true, “resPath:”SDK文件路径”, “key”: “秘钥（包括文件及resPath路径的加密）”
      */
-    public function updateSdk(){
+    public function updateSdk()
+    {
 
     }
 }

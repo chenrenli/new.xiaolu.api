@@ -40,7 +40,7 @@ function output_error($msg = "error")
     $result['error'] = $msg;
     $key = config('auth.aec_key');
     $iv = config('auth.aec_iv');
-    //$result = AES::encrypt($key, $iv, json_encode($result));
+    $result = AES::encrypt($key, $iv, json_encode($result));
     return $result;
 }
 
