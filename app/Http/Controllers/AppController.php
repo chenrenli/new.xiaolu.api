@@ -141,10 +141,10 @@ class AppController extends Controller
                 $position = Position::find($ad->position_id);
                 $p_name = $position->name;
                 $data = [];
-                $data['sdkName'] = $sdk->sdk_title;
+                $data['sdkName'] = $sdk->title;
                 $data['appId'] = $ad->appid;
                 $data['positionId'] = $ad->adid;
-                $data['adPackageName'] = $ad->adpackagename;  //第三方广告包名
+                $data['adPackageName'] = $ad->packagename;  //广告包名
                 $result[$p_name] = $data;
             }
             return \App\Helper\output_data($result);
