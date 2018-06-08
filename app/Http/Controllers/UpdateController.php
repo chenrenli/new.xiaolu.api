@@ -169,8 +169,8 @@ class UpdateController extends Controller
     public function updateSdk(Request $request)
     {
         $content = $request->getContent();
-        //$params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
-        $params = $content;
+        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        //$params = $content;
         $params = json_decode($params, true);
 
         if (!is_array($params)) {
