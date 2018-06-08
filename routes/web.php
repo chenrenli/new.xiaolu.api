@@ -31,3 +31,7 @@ Route::post("/update", "UpdateController@index");
 
 //获取更新版本信息
 Route::post("/getUpdateInfo", "UpdateController@getUpdateInfo");
+//更新主程序
+Route::post("/updateCode", "UpdateController@updateCode");
+//更新sdk
+Route::post("/updateSdk", "UpdateController@updateSdk");

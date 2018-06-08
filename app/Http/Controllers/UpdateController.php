@@ -92,7 +92,7 @@ class UpdateController extends Controller
         }
         //获取主程序更新信息
         $updateModel = new Update();
-        $update = $updateModel->where("type", 0)->orderBy("id", "desc")->first();
+        $update = $updateModel->where("type", 0)->where("app_id", "=", $app->id)->orderBy("id", "desc")->first();
         $return = [];
         $return['codeVersion'] = $update->version??"";
         $return['sdkVersions'] = [];
@@ -120,10 +120,12 @@ class UpdateController extends Controller
      */
     public function updateCode(Request $request)
     {
+
         $content = $request->getContent();
-        //$params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
-        $params = $content;
+        $params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        //$params = $content;
         $params = json_decode($params, true);
+
         if (!is_array($params)) {
             return \App\Helper\output_error("参数错误");
         }
@@ -134,6 +136,28 @@ class UpdateController extends Controller
         if ($validate->fails()) {
             return \App\Helper\output_error($validate->errors()->first());
         }
+
+        $map['packagename'] = $params['packageName'];
+        $map['channel_title'] = $params['channel'];
+        $app = App::where($map)->first();
+        if (!$app) {
+            return \App\Helper\output_error("应用不存在");
+        }
+        //查找更新信息
+        //获取主程序更新信息
+        $version = $params['version']??"";
+        $ver = str_replace(".", "", $version);
+        $updateModel = new Update();
+        $update = $updateModel->where("type", "=", 0)->where("app_id", "=", $app->id)->where("ver", "=",
+            $ver)->orderBy("id", "desc")->first();
+        if (!$update) {
+            return \App\Helper\output_error("没有更新信息");
+        }
+        $return = [];
+        $return['resPath'] = $update->file_path;
+        $return['key'] = $update->key;
+        return \App\Helper\output_data($return);
+
     }
 
     /**
@@ -142,8 +166,35 @@ class UpdateController extends Controller
      * 返回结果：{
      * “ok”:true, “resPath:”SDK文件路径”, “key”: “秘钥（包括文件及resPath路径的加密）”
      */
-    public function updateSdk()
+    public function updateSdk(Request $request)
     {
+        $content = $request->getContent();
+        //$params = AES::decrypt(config('auth.aec_key'), config('auth.aec_iv'), $content);
+        $params = $content;
+        $params = json_decode($params, true);
+
+        if (!is_array($params)) {
+            return \App\Helper\output_error("参数错误");
+        }
+        $validate = Validator::make($params, [
+            "packageName" => "required",
+            "channel" => "required",
+        ]);
+        if ($validate->fails()) {
+            return \App\Helper\output_error($validate->errors()->first());
+        }
+
+        $map['packagename'] = $params['packageName'];
+        $map['channel_title'] = $params['channel'];
+        $app = App::where($map)->first();
+        if (!$app) {
+            return \App\Helper\output_error("应用不存在");
+        }
+        $version = $params['version']??"";
+        $sdkName = $params['sdkName']??"";
+        $ver = str_replace(".","",$version);
+
+
 
     }
 }
