@@ -132,6 +132,8 @@ class AppController extends Controller
             $strategy_ad_ids = $res['data']['ad_ids'];
             $adModel = new Ad();
             $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
+            echo "dddd";
+            print_r($ad_list->toArray());
             $result = [];
             if ($ad_list) {
                 foreach ($app_ad as $appad) {
@@ -310,17 +312,57 @@ class AppController extends Controller
 
                     case 8:
                         //地区(国家)
-
+                        // 根据IP获取地理位置
+                        $location = IP::find($ip);
+                        if ($location == 'N/A') {
+                            $location[0] = '';
+                        }
+                        $rule_content = explode(',', $rule_content);
+                        if ($rule == 2 && in_array($location[0], $rule_content)) {
+                            $return_strategy_id = true;
+                        } else {
+                            if ($rule == 1 && !in_array($location[0], $rule_content)) {
+                                $return_strategy_id = true;
+                            } else {
+                                $return_strategy_id = false;
+                            }
+                        }
                         break;
                     case 9:
                         //地区(省)
-
+                        // 根据IP获取地理位置
+                        $location = IP::find($ip);
+                        if ($location == 'N/A') {
+                            $location[1] = '';
+                        }
+                        $rule_content = explode(',', $rule_content);
+                        if ($rule == 2 && in_array($location[1], $rule_content)) {
+                            $return_strategy_id = true;
+                        } else {
+                            if ($rule == 1 && !in_array($location[1], $rule_content)) {
+                                $return_strategy_id = true;
+                            } else {
+                                $return_strategy_id = false;
+                            }
+                        }
                         break;
                     case 10:
                         //地区(城市)
-
+                        $location = IP::find($ip);
+                        if ($location == 'N/A') {
+                            $location[2] = '';
+                        }
+                        $rule_content = explode(',', $rule_content);
+                        if ($rule == 2 && in_array($location[2], $rule_content)) {
+                            $return_strategy_id = true;
+                        } else {
+                            if ($rule == 1 && !in_array($location[2], $rule_content)) {
+                                $return_strategy_id = true;
+                            } else {
+                                $return_strategy_id = false;
+                            }
+                        }
                         break;
-
 
                 }
             }
