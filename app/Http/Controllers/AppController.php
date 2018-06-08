@@ -130,6 +130,7 @@ class AppController extends Controller
         } else {
             //替换成策略的广告
             $strategy_ad_ids = $res['data']['ad_ids'];
+            print_r($strategy_ad_ids);
             $adModel = new Ad();
             $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
             $result = [];
