@@ -376,7 +376,7 @@ class AppController extends Controller
         if (count($adids) == 0) {
             return \App\Helper\onResult(false, [], "找不到相关策略的广告数据");
         }
-
+print_r($adids);
         $result = [];
         $result['ad_ids'] = $adids;
         return \App\Helper\onResult(true, $result);
