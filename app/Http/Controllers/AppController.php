@@ -133,29 +133,21 @@ class AppController extends Controller
             $adModel = new Ad();
             $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
             $result = [];
-            if ($ad_list) {
-                foreach ($app_ad as $appad) {
-                    $position = Position::find($appad->position_id);
-                    $p_name = $position->name;
-                    $data = [];
-                    $data['sdkName'] = $appad->sdk_title;
-                    $data['appId'] = $appad->appid;
-                    $data['positionId'] = $appad->adid;
-                    $data['adPackageName'] = $appad->adpackagename;  //第三方广告包名
-                    foreach ($ad_list as $ad) {
-                        if ($appad->sdk_id == $ad->sdk_id && $appad->position_id == $ad->position_id) {
-                            //替换同一个sdk同一个广告类型的广告
-                            $data['appId'] = $ad->appid;
-                            $data['positionId'] = $ad->adid;
-                            $data['adPackageName'] = $ad->packagename;  //第三方广告包名
-                            break;
-                        }
-                    }
-                    $result[$p_name] = $data;
-                }
-                return \App\Helper\output_data($result);
-
+            if (!$ad_list) {
+                return \App\Helper\output_error("广告数据不存在");
             }
+            foreach($ad_list as $ad){
+                $sdk = Sdk::where("id","=",$ad->sdk_id)->first();
+                $position = Position::find($ad->position_id);
+                $p_name = $position->name;
+                $data = [];
+                $data['sdkName'] = $sdk->sdk_title;
+                $data['appId'] = $ad->appid;
+                $data['positionId'] = $ad->adid;
+                $data['adPackageName'] = $ad->adpackagename;  //第三方广告包名
+                $result[$p_name] = $data;
+            }
+            return \App\Helper\output_data($result);
 
         }
 
