@@ -132,8 +132,6 @@ class AppController extends Controller
             $strategy_ad_ids = $res['data']['ad_ids'];
             $adModel = new Ad();
             $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
-            echo "dddd";
-            print_r($ad_list->toArray());
             $result = [];
             if ($ad_list) {
                 foreach ($app_ad as $appad) {
