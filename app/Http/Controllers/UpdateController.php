@@ -192,9 +192,19 @@ class UpdateController extends Controller
         }
         $version = $params['version']??"";
         $sdkName = $params['sdkName']??"";
-        $ver = str_replace(".","",$version);
-
-
+        $ver = str_replace(".", "", $version);
+        $sdk = Sdk::where("title", "=", $sdkName)->first();
+        if (!$sdk) {
+            return \App\Helper\output_error("sdk is not exist");
+        }
+        $update = Update::where("sdk_id", "=", $sdk->id)->where("ver", "=", $ver)->first();
+        if (!$update) {
+            return \App\Helper\output_error("sdk更新信息不存在");
+        }
+        $return = [];
+        $return['resPath'] = $update->file_path;
+        $return['key'] = $update->key;
+        return \App\Helper\output_data($return);
 
     }
 }
