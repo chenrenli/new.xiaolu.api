@@ -6,12 +6,20 @@
  * Time: 09:54
  */
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class StrategyRule extends Model{
-    protected $table="strategy_rule";
+class StrategyRule extends Model
+{
+    protected $table = "strategy_rule";
     public $timestamps = false;
 
+
+    public function getList($strategy_ids = [])
+    {
+        return DB::table($this->table)->whereIn("strategy_id", $strategy_ids)->orderByRaw(DB::raw("FIELD(strategy_id)",
+            implode(",", $strategy_ids)))->get();
+    }
 
 }

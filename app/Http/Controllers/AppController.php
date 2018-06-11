@@ -137,8 +137,8 @@ class AppController extends Controller
             if (!$ad_list) {
                 return \App\Helper\output_error("广告数据不存在");
             }
-            foreach($ad_list as $ad){
-                $sdk = Sdk::where("id","=",$ad->sdk_id)->first();
+            foreach ($ad_list as $ad) {
+                $sdk = Sdk::where("id", "=", $ad->sdk_id)->first();
                 $position = Position::find($ad->position_id);
                 $p_name = $position->name;
                 $data = [];
@@ -176,8 +176,8 @@ class AppController extends Controller
             $strategy_ids[] = $strategy->id;
         }
         $strategyRuleModel = new StrategyRule();
-        $rule_list = $strategyRuleModel->whereIn("strategy_id", $strategy_ids)->get();
-
+        $rule_list = $strategyRuleModel->getList($strategy_ids);
+        print_r($rule_list->toArray());
         $strategy_id = 0;
         $return_strategy_id = false;
         if ($rule_list) {
@@ -369,8 +369,6 @@ class AppController extends Controller
         if (empty($s_ad_list)) {
             return \App\Helper\onResult(false, [], "找不到相关策略的广告数据");
         }
-        print_r($sadMap);
-        print_r($s_ad_list);
         $adids = [];
         foreach ($s_ad_list as $s_ad) {
             $adids[] = $s_ad->ad_id;
