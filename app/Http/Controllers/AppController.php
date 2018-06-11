@@ -107,7 +107,9 @@ class AppController extends Controller
             $data['sdkName'] = $ad->sdk_title;
             $data['appId'] = $ad->appid;
             $data['positionId'] = $ad->adid;
-            $data['adPackageName'] = $ad->adpackagename;  //第三方广告包名
+            if ($ad->adpackagename) {
+                $data['adPackageName'] = $ad->adpackagename;//第三方广告包名
+            }
             $result[$p_name] = $data;
         }
         //根据策略筛选广告
@@ -147,7 +149,9 @@ class AppController extends Controller
                 $data['sdkName'] = $sdk->title;
                 $data['appId'] = $ad->appid;
                 $data['positionId'] = $ad->adid;
-                $data['adPackageName'] = $ad->packagename;  //广告包名
+                if ($ad->packagename) {
+                    $data['adPackageName'] = $ad->packagename;//广告包名
+                }
                 $result[$p_name] = $data;
             }
             return \App\Helper\output_data($result);
