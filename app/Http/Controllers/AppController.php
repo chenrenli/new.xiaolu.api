@@ -123,14 +123,13 @@ class AppController extends Controller
 
         $return = $this->getStrategy($map);
         $res = json_decode($return, true);
-print_r($res);
+
         if ($res['ok'] == false) {
             //策略不命中的话显示默认的sdk广告
             return \App\Helper\output_data($result);
         } else {
             //替换成策略的广告
             $strategy_ad_ids = $res['data']['ad_ids'];
-            print_r($strategy_ad_ids);
             $adModel = new Ad();
             $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
             $result = [];
