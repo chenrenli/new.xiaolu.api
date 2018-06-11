@@ -229,7 +229,7 @@ class AppController extends Controller
                         } else {
                             $return_strategy_id = false;
                         }
-                        echo "package----".$return_strategy_id;
+                        echo "package----".$return_strategy_id."aaa\r\n";
                         break;
                     case 3:
                         //手机品牌
