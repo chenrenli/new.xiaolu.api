@@ -158,6 +158,7 @@ class AppController extends Controller
     {
 
         $version = $map['version'];
+        $sdkVersion  = $map['sdkVersion'];
         $packagename = $map['packagename'];
         $brand = $map['brand'];
         $net = $map['net'];
@@ -201,16 +202,16 @@ class AppController extends Controller
                         if (in_array($rule, [1, 2])) {
                             $rule_content = explode(",", $rule_content);
                         }
-                        if ($rule == 2 && in_array($version, $rule_content)) {
+                        if ($rule == 2 && in_array($sdkVersion, $rule_content)) {
                             //包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 1 && !in_array($version, $rule_content)) {
+                        } elseif ($rule == 1 && !in_array($sdkVersion, $rule_content)) {
                             //不包含
                             $return_strategy_id = true;
-                        } elseif ($rule == 3 && $rule_content <= $version) {
+                        } elseif ($rule == 3 && $rule_content <= $sdkVersion) {
                             //小于等于
                             $return_strategy_id = true;
-                        } elseif ($rule == 4 && $rule_content >= $version) {
+                        } elseif ($rule == 4 && $rule_content >= $sdkVersion) {
                             //大于等于
                             $return_strategy_id = true;
                         } else {
