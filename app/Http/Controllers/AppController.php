@@ -166,7 +166,7 @@ class AppController extends Controller
         $operator = $map['operator'];
 
         $strategyModel = new Strategy();
-        $strategy_list = $strategyModel->getList([]);
+        $strategy_list = $strategyModel->getList(['status' => 1]);
         if (!$strategy_list) {
             return \App\Helper\onResult(false, [], "策略不存在");
         }
@@ -356,6 +356,9 @@ class AppController extends Controller
                 }
             }
         }
+        echo $strategy_id."\r\n";
+        echo $return_strategy_id;
+        exit();
         if ($return_strategy_id == false || $strategy_id == 0) {
             return \App\Helper\onResult(false, [], "没有合适的流量策略");
         }
