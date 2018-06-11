@@ -229,6 +229,7 @@ class AppController extends Controller
                         } else {
                             $return_strategy_id = false;
                         }
+                        echo "package----".$return_strategy_id;
                         break;
                     case 3:
                         //手机品牌
@@ -356,9 +357,7 @@ class AppController extends Controller
                 }
             }
         }
-        echo $strategy_id."ddd";
-        echo $return_strategy_id;
-        exit();
+
         if ($return_strategy_id == false || $strategy_id == 0) {
             return \App\Helper\onResult(false, [], "没有合适的流量策略");
         }
