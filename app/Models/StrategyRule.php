@@ -18,8 +18,8 @@ class StrategyRule extends Model
 
     public function getList($strategy_ids = [])
     {
-        return DB::table($this->table)->whereIn("strategy_id", $strategy_ids)->orderByRaw(DB::raw("FIELD(strategy_id)",
-            implode(",", $strategy_ids)))->get();
+        $filestr = implode(",", $strategy_ids);
+        return DB::table($this->table)->whereIn("strategy_id", $strategy_ids)->orderByRaw(DB::raw("FIELD(strategy_id,$filestr)"))->get();
     }
 
 }
