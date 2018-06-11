@@ -158,7 +158,7 @@ class AppController extends Controller
     {
 
         $version = $map['version'];
-        $sdkVersion  = $map['sdkVersion'];
+        $sdkVersion = $map['sdkVersion'];
         $packagename = $map['packagename'];
         $brand = $map['brand'];
         $net = $map['net'];
@@ -174,6 +174,9 @@ class AppController extends Controller
         $strategy_ids = [];
         foreach ($strategy_list as $strategy) {
             $strategy_ids[] = $strategy->id;
+        }
+        if (count($strategy_ids) <= 0) {
+            return \App\Helper\output_error("策略不存在");
         }
         $strategyRuleModel = new StrategyRule();
         $rule_list = $strategyRuleModel->getList($strategy_ids);
