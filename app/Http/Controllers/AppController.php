@@ -176,7 +176,6 @@ class AppController extends Controller
         }
         $strategyRuleModel = new StrategyRule();
         $rule_list = $strategyRuleModel->getList($strategy_ids);
-        print_r($rule_list->toArray());
         $strategy_id = 0;
         $return_strategy_id = false;
         if ($rule_list) {
@@ -357,6 +356,9 @@ class AppController extends Controller
                 }
             }
         }
+        echo $strategy_id."ddd";
+        echo $return_strategy_id;
+        exit();
         if ($return_strategy_id == false || $strategy_id == 0) {
             return \App\Helper\onResult(false, [], "没有合适的流量策略");
         }
