@@ -12,6 +12,7 @@ use App\Helper\Util\IP;
 use App\Models\Ad;
 use App\Models\App;
 use App\Models\AppAd;
+use App\Models\Channel;
 use App\Models\Position;
 use App\Models\Sdk;
 use App\Models\Strategy;
@@ -74,7 +75,9 @@ class AppController extends Controller
         $packagename = $params['packageName'];  //游戏包名
         $channel = $params['channel'];   //渠道名称
 
+        //查找渠道ID
         $map['packagename'] = $packagename;
+        $map['channel_title'] = $channel;
         $appModel = new App();
         $app = $appModel->where($map)->first();
         if (!$app) {
