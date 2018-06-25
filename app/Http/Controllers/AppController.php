@@ -110,6 +110,8 @@ class AppController extends Controller
             if ($ad->adpackagename) {
                 $data['adPackageName'] = $ad->adpackagename;//第三方广告包名
             }
+            $data['isDebug'] = $ad->is_debug == 1 ? true : false;
+
             $result[$p_name] = $data;
         }
         //根据策略筛选广告
