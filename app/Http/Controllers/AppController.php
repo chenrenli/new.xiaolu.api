@@ -148,7 +148,7 @@ class AppController extends Controller
                 $position = Position::find($ad->position_id);
                 $p_name = $position->name;
                 $data = [];
-                $data['sdkName'] = $sdk->title;
+                $data['sdkName'] = isset($sdk->title) ? $sdk->title : "";
                 $data['appId'] = $ad->appid;
                 $data['positionId'] = $ad->adid;
                 if ($ad->packagename) {
