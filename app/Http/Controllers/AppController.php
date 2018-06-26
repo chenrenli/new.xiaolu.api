@@ -174,10 +174,10 @@ class AppController extends Controller
         $channel = $map['channel'];
         $ip = $map['ip'];
         $operator = $map['operator'];
-        if ($map['test']) {
-            $location = IP::find($ip);
-            print_r($location);
-        }
+//        if ($map['test']) {
+//            $location = IP::find($ip);
+//            print_r($location);
+//        }
         $strategyModel = new Strategy();
         $strategy_list = $strategyModel->getList(['status' => 1]);
         if (!$strategy_list) {
