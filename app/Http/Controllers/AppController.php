@@ -138,7 +138,7 @@ class AppController extends Controller
             //替换成策略的广告
             $strategy_ad_ids = $res['data']['ad_ids'];
             $adModel = new Ad();
-            $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->get();
+            $ad_list = $adModel->whereIn("id", $strategy_ad_ids)->where("status", 1)->get();
             $result = [];
             if (!$ad_list) {
                 return \App\Helper\output_error("广告数据不存在");
