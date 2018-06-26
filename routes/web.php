@@ -13,12 +13,12 @@
 
 Route::get('/', function () {
 
-    $ip = "113.108.182.52";
-    // 根据IP获取地理位置
-    $location = \App\Helper\Util\IP::find($ip);
-
-    echo "<pre>";
-    print_r($location);
+//    $ip = "113.108.182.52";
+//    // 根据IP获取地理位置
+//    $location = \App\Helper\Util\IP::find($ip);
+//
+//    echo "<pre>";
+//    print_r($location);
 
 
 });
