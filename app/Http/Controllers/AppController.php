@@ -154,7 +154,7 @@ class AppController extends Controller
                 if ($ad->packagename) {
                     $data['adPackageName'] = $ad->packagename;//广告包名
                 }
-                $data['isDebug'] = false;
+                $data['isDebug'] = $ad->is_debug == 1 ? true : false;
                 $result[$p_name] = $data;
             }
             return \App\Helper\output_data($result);
