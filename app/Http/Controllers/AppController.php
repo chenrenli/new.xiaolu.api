@@ -127,7 +127,7 @@ class AppController extends Controller
         $map['net'] = $net;
         $map['channel'] = $channel;
         $map['sdkVersion'] = $params['sdkVersion']??""; //sdk版本
-
+        $map['test'] = $params['test']??"";
         $return = $this->getStrategy($map);
         $res = json_decode($return, true);
 
@@ -174,7 +174,10 @@ class AppController extends Controller
         $channel = $map['channel'];
         $ip = $map['ip'];
         $operator = $map['operator'];
-
+        if ($map['test']) {
+            $location = IP::find($ip);
+            print_r($location);
+        }
         $strategyModel = new Strategy();
         $strategy_list = $strategyModel->getList(['status' => 1]);
         if (!$strategy_list) {
