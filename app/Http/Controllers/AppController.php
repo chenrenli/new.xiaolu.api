@@ -102,7 +102,10 @@ class AppController extends Controller
         $result = [];
         foreach ($app_ad as $key => $ad) {
             $position = Position::find($ad->position_id);
-            $p_name = $position->name;
+            $p_name = isset($position->name) ? $position->name : "";
+            if (empty($p_name)) {
+                continue;
+            }
             $data = [];
             $data['sdkName'] = $ad->sdk_title;
             $data['appId'] = $ad->appid;
@@ -151,7 +154,10 @@ class AppController extends Controller
             foreach ($ad_list as $ad) {
                 $sdk = Sdk::where("id", "=", $ad->sdk_id)->first();
                 $position = Position::find($ad->position_id);
-                $p_name = $position->name;
+                $p_name = isset($position->name) ? $position->name : "";
+                if (empty($p_name)) {
+                    continue;
+                }
                 $data = [];
                 $data['sdkName'] = isset($sdk->title) ? $sdk->title : "";
                 $data['appId'] = $ad->appid;
