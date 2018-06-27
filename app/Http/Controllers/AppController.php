@@ -137,6 +137,9 @@ class AppController extends Controller
         //调试用
         if (isset($params['show_debug']) && $params['show_debug']) {
             print_r($res);
+            echo "时间调试:\r\n";
+            echo date("H")."\r\n";
+
         }
 
         if ($res['ok'] == false) {
@@ -319,6 +322,7 @@ class AppController extends Controller
                         $end_time_hour = $rule_content[3];
                         $h = intval(date("H"));
                         $date = date("Ymd");
+
                         if ($date >= $begin_time && $date <= $end_time && $h >= $begin_time_hour && $h <= $end_time_hour) {
                             $return_strategy_id = true;
                         } else {
