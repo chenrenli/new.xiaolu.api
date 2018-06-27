@@ -131,6 +131,11 @@ class AppController extends Controller
         $return = $this->getStrategy($map);
         $res = json_decode($return, true);
 
+        //调试用
+        if (isset($params['show_debug']) && $params['show_debug']) {
+            print_r($res);
+        }
+
         if ($res['ok'] == false) {
             //策略不命中的话显示默认的sdk广告
             return \App\Helper\output_data($result);
