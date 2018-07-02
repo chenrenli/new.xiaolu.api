@@ -99,7 +99,7 @@ class UpdateController extends Controller
         foreach ($sdk_ids as $sdk_id) {
             $update = Update::where("sdk_id", "=", $sdk_id)->orderBy("id", "desc")->first();
             $sdk = Sdk::where("id", "=", $sdk_id)->first();
-            if ($sdk) {
+            if ($sdk && $update) {
                 $version = "";
                 $version = $update->version??"";
                 $return['sdkVersions'][] = ["name" => $sdk->title, "version" => $version];
