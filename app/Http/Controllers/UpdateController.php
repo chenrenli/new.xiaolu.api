@@ -197,7 +197,12 @@ class UpdateController extends Controller
         if (!$sdk) {
             return \App\Helper\output_error("sdk is not exist");
         }
-        $update = Update::where("sdk_id", "=", $sdk->id)->where("ver", "=", $ver)->first();
+        $update = Update::where("sdk_id", "=", $sdk->id)->where("ver", "=", $ver)->where('type',1)->first();
+        //调试
+        if(isset($params['is_debug']) && $params['is_debug']){
+            print_r($update);
+            print_r($sdk);
+        }
         if (!$update) {
             return \App\Helper\output_error("sdk更新信息不存在");
         }
