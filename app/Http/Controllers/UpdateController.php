@@ -203,8 +203,8 @@ class UpdateController extends Controller
         $update = Update::where("sdk_id", "=", $sdk->id)->where("ver", "=", $ver)->where('type',1)->first();
         //调试
         if(isset($params['is_debug']) && $params['is_debug']){
-            echo DB::getQueryLog();
-            
+            print_r( DB::getQueryLog());
+
         }
         if (!$update) {
             return \App\Helper\output_error("sdk更新信息不存在");
