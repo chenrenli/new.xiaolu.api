@@ -13,6 +13,7 @@ use App\Models\AppAd;
 use App\Models\Sdk;
 use App\Models\Update;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class UpdateController extends Controller
@@ -197,11 +198,13 @@ class UpdateController extends Controller
         if (!$sdk) {
             return \App\Helper\output_error("sdk is not exist");
         }
+
+        DB::enableQueryLog();
         $update = Update::where("sdk_id", "=", $sdk->id)->where("ver", "=", $ver)->where('type',1)->first();
         //调试
         if(isset($params['is_debug']) && $params['is_debug']){
-            print_r($update);
-            print_r($sdk);
+            echo DB::getQueryLog();
+            
         }
         if (!$update) {
             return \App\Helper\output_error("sdk更新信息不存在");
