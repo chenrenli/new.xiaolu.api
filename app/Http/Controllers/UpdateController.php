@@ -193,14 +193,14 @@ class UpdateController extends Controller
         }
         $version = $params['version']??"";
         $sdkName = $params['sdkName']??"";
-        $ver = str_replace(".", "", $version);
+        //$ver = str_replace(".", "", $version);
         $sdk = Sdk::where("title", "=", $sdkName)->first();
         if (!$sdk) {
             return \App\Helper\output_error("sdk is not exist");
         }
 
         DB::enableQueryLog();
-        $update = Update::where("sdk_id", "=", $sdk->id)->where("ver", "=", $ver)->where('type',1)->first();
+        $update = Update::where("sdk_id", "=", $sdk->id)->where("version", "=", $version)->where('type',1)->first();
         //调试
         if(isset($params['is_debug']) && $params['is_debug']){
             print_r( DB::getQueryLog());
